@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: comida-feliz-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: comida_feliz
+      POSTGRES_USER: comidafeliz
+      POSTGRES_PASSWORD: feliz123
+    ports:
+      - "5432:5432"
+    volumes:
+      - comida_feliz_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U comidafeliz -d comida_feliz"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+volumes:
+  comida_feliz_data:
